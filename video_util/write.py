@@ -46,7 +46,7 @@ class VideoWriterWithFFMpeg(VideoWriterClass, ABC):
         command = [VideoWriterWithFFMpeg.__ffmpeg_path,
                    # '-y',
                    # '-loglevel', 'error',
-                   '-loglevel', 'panic',
+                   # '-loglevel', 'panic',
                    '-f', 'rawvideo',
                    # '-hwaccel','cuvid',
                    # '-c:v', 'libx264',
@@ -59,17 +59,20 @@ class VideoWriterWithFFMpeg(VideoWriterClass, ABC):
                    '-c:v', 'libx264',
                    # '-c:v', 'h264_nvenc',
                    '-pix_fmt', 'yuv420p',
+                   # '-s', '1920*1080',
                    # '-preset', 'ultrafast',
                    '-f', 'flv',
-                   self.rtmp_url]
+                   self.rtmp_url,
+                   ]
 
         self.pipe = subprocess.Popen(command, stdin=subprocess.PIPE)  # ,shell=False
+        print(" ".join(command))
         logging.info(f'pushing rtmp to {self.rtmp_url}')
         self._is_inited = True
 
     def write(self, frame):
         """
-        :param frame: BGR格式的帧图像
+        :param frame: cv2中BGR格式的帧图像
         :return:
         """
         if not self._is_inited:
